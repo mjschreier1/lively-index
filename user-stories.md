@@ -62,16 +62,77 @@
 - Header component contains a house icon
 - When clicked, the house icon takes the user back to the main menu
 
-#### As a resident, I want to be able to view my monthly balance online so that I don't have to contact the office to know how much rent is due.
+#### As a resident, I want to be able to view when conference rooms are available so that I can plan events and meetings accordingly.
+- One button component (#reserveRooms) is rendered with an h2 containing "Reserve Rooms" and a floor plan icon
+- When clicked, #reserveRooms navigates to /reserve
+- /reserve renders a dropdown menu with each conference room
+- When a conference room is selected from the dropdown, a ul is rendered with an li for each upcoming reservation for that room
+
+#### As a resident, I want to be able to reserve a conference room space online so that I don't have to contact the office to schedule an event.
+- When a user navigates to /reserve, there is an #addReservation button
+- When #addReservation is clicked, a form is rendered with an input for start date/time, an input for end date/time, and a select menu with an option for each conference room are rendered in addition to a submit button
+- If the times overlap an existing reservation when the submit button is clicked, the error message "Room not available for the times selected" is rendered
+- If the submit button is clicked when there are no conflicts, the success message "Room reserved successfully" is rendered
+- After a successful reservation, if the user navigates back to /reserve, the reservation is visible when the room is selected from the dropdown menu
+
 #### As a resident, I want to be able to pay my rent online so that I don't have to stop by the office and pay in person.
+- One button component (#payment) is rendered with an h2 containing "Make Payment" and a money icon
+- When clicked, #payment navigates to /payment
+- /payment has an h2 with the text "Make a Payment" and a form
+- The payment form has a number input with the label "amount"
+- The payment form includes a Stripe/Plaid iframe that can securely collect ACH payment information
+- /payment has a p with terms as required by law (see https://support.stripe.com/questions/accepting-ach-payments-with-stripe#ach-authorization), including clear and legible consent, transaction specific details, client/account information, further transaction info (if applicable), receipt of transaction, process for revocation
+- When the user enters credentials and clicks submit, a confirmation prompt appears on-screen
+- When the user confirms the prompt, a processing message in a p tag renders on-screen
+
+    More info at https://stripe.com/docs/ach
+
 #### As a resident, I want an email confirmation after submitting an online payment so that I have peace of mind in case of a clerical error in the office.
+- After accepting the payment confirmation prompt, the user receives an email confirmation message to alert them that their payment is successfully processing
+
 #### As a manager, I want to see a revenues report of online rent payments so that I can keep the books tidy.
-#### As a user, I want to be able to view when conference rooms are available so that I can plan events and meetings accordingly.
-#### As a user, I want to be able to reserve a conference room space online so that I don't have to contact the office to schedule an event.
-#### As a manager, I want to be able to generate an email to a user when they have misplaced their PIN number.
-#### As a user, I want to be able to render the community events list in a calendar view so that I can scan the data more easily.
+- When an admin user is at /payment, a #userReport button, a #monthlyReport, and a #annualReport button renders
+- When #userReport is clicked, a form with input for user last name is rendered along with a submit button
+- The submit button is disabled until at least two characters have been typed into the last name field
+- When a last name is input and the submit button is clicked, a ul with is rendered with an li for each matching user, which includes the user's primary key ID, first name, last name, and email address
+- If no matches are returned, a p error message is rendered
+- When a user li is clicked, a ul is rendered with an li for each of that user's transactions, which includes amount, status, processing date, and completed date
+- When #monthlyReport is clicked, a form with input for month and year is rendered along with a submit button
+- The submit button is disabled until at least one character is typed into the month input and at least four character are typed into the year input
+- If no matching records are found when the user clicks submit, the error message "No transactions found!" renders
+- If there are matching records found when the user clicks submit, a gross revenue is rendered as an h4 along with a ul with an li for each transaction processing or processed that month
+- When #annualReport is clicked, a form with input year is rendered along with a submit button
+- The submit button is disabled until at least four character are typed into the year input
+- If no matching records are found when the user clicks submit, the error message "No transactions found!" renders
+- If there are matching records found when the user clicks submit, a gross revenue is rendered as an h4 along with a ul with an li for each transaction processing or processed that year
+
 #### As a user, I want an email confirmation after submitting a service request so that I have peace of mind that it has been received.
-#### As a user, I want an email confirmation after reserving a conference room so that I have peace of mind in case of some clerical or technical error.
+- When a request is submitted successfully at /service, an email arrives at the user's provided email address
+
 #### As a user, I want an email confirmation upon completion of a service request so that I know when my maintenance issue has been resolved.
+- When an admin updates the status of a service request to closed, an email arrives at the user's provided email address
+
+#### As a user, I want an email confirmation after reserving a conference room so that I have peace of mind in case of some clerical or technical error.
+- When the successful response is returned from a conference room reservation, an email arrives at the user's provided email address
+
+#### As a manager, I want to be able to generate a reset email to a user when they have misplaced their PIN number.
+- When a user with admin credentials is at /, a button with the text "Reset User PIN" is rendered below the other buttons
+- When "Reset User PIN" is clicked, the user is navigated to /reset
+- When an admin user is at /reset, a form with input for user last name is rendered along with a submit button
+- The submit button is disabled until at least two characters have been typed into the last name field
+- When a last name is input and the submit button is clicked, a ul with is rendered with an li for each matching user, which includes the user's primary key ID, first name, last name, and email address, as well as a "Reset PIN" button
+- If no matches are returned, a p error message is rendered
+- When the "Reset PIN" button is clicked, an random number is generated and emailed to the user and that random number replaces the PIN in the users table of the database
+
+#### As a user of any status, I want to be able to update my email address
+- A button with the text "Update Email Address" is rendered below the four primary buttons
+- When "Update Email Address" is clicked, a modal pops up with a form with an email input and a submit button
+- When a user inputs an email address and clicks submit, the email entry associated with the user's record in the users table is updated
+- After a user updates email address, a confirmation email arrives at both the user's new address and old address
+
+## Stretch Goals
+
+#### As a user, I want to be able to render the community events list in a calendar view so that I can scan the data more easily.
 #### As a manager, I want to see animations as the user moves between UI components so that the user experience is more elegant.
 #### As a user, I want to be able to export a community calendar event to my Google calendar.
+#### As a resident, I want to be able to view my monthly balance online so that I don't have to contact the office to know how much rent is due.
