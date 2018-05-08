@@ -1,0 +1,21 @@
+{
+  "name": "lively-docs",
+  "version": "1.0.0",
+  "description": "Documents and tests for LiveLy",
+  "scripts": {
+    "test": "npx cypress open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjschreier1/lively-index.git"
+  },
+  "author": "Michael Schreier",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mjschreier1/lively-index/issues"
+  },
+  "homepage": "https://github.com/mjschreier1/lively-index#readme",
+  "dependencies": {
+    "cypress": "^2.1.0"
+  }
+}
