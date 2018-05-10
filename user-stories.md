@@ -25,7 +25,7 @@
 #### As a manager, I want to be able to add an event to the community events list so that I don't have to call our developer to update the calendar.
 - On load, the index route loads a modal with an input for last name, a number input for user PIN, and a submit button
 - Submit button is disabled when the last name is less than 2 characters or when the user PIN is less than 5 numbers
-- If no user is logged in, all routes redirect to the index route
+- If no user is logged in, all routes display credentials component instead of view
 - When an admin user clicks #communityCalendar to navigate to /calendar, an add form also appears
 - Add form includes an input for start time, end time, location, and description, as well as a submit button
 - Submit button is disabled if start time, end time, or location fields are empty

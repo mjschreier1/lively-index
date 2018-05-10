@@ -100,7 +100,7 @@ describe("LiveLy Application", () => {
       .should("have.length.at.least", 3)
   })
 
-  it("allows an admin to add an event to the community events list", () => {
+  it.only("allows an admin to add an event to the community events list", () => {
     cy.visit("/")
 
     cy.get("#credentials")
@@ -142,21 +142,18 @@ describe("LiveLy Application", () => {
     cy.get("#credentials button")
       .should("have.attr", "disabled")
 
-    cy.visit("/calendar")
-
-    cy.location()
-      .should(location => {
-        expect(location.pathname).to.eq("/")
-      })
-
     cy.get("#credentials input").eq(0)
+      .clear()
       .type("admin")
 
     cy.get("#credentials input").eq(1)
+      .clear()
       .type("12345")
 
     cy.get("#credentials button")
       .should("not.have.attr", "disabled")
+
+    cy.get("#credentials button")
       .click()
 
     cy.get("#credentials")
@@ -164,6 +161,11 @@ describe("LiveLy Application", () => {
 
     cy.get("#communityCalendar")
       .click()
+
+    cy.location()
+      .should(location => {
+        expect(location.pathname).to.eq("/calendar")
+      })
 
     cy.location()
       .should("contain", "/calendar")
