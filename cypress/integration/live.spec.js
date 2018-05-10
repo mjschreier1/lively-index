@@ -39,14 +39,54 @@ describe("LiveLy Application", () => {
     cy.get("#communityCalendar h2")
       .should("contain", "Community Calendar")
     
-    cy.get("#communityCalendar p")
+    cy.get("#communityCalendar i")
       .should("exist")
 
     cy.get("#communityCalendar")
       .click()
 
     cy.location()
-      .should("contain", "/calendar")
+      .should(location => {
+        expect(location.pathname).to.eq("/calendar")
+      })
+
+    cy.request(
+      "POST", 
+      "https://lively-app-server.herokuapp.com/events?startYear=2018&startMonth=5&startDate=20&startHour=9&startMinute=0&finishYear=2018&finishMonth=5&finishDate=20&finishHour=11&finishMinute=0", 
+      {
+        name: "Coffee and Pastries",
+        location: "Clubhouse",
+        description: "Stop by the clubhouse for complimentary pastries!"
+      }
+    )
+
+    cy.request(
+      "POST",
+      "https://lively-app-server.herokuapp.com/events?startYear=2018&startMonth=6&startDate=20&startHour=9&startMinute=0&finishYear=2018&finishMonth=6&finishDate=20&finishHour=11&finishMinute=0",
+      {
+        name: "Summer Kickoff Party",
+        location: "Pool",
+        description: "Come enjoy lemonade and fun!"
+      }
+    )
+
+    cy.request("https://lively-app-server.herokuapp.com/events")
+      .then(res => {
+        expect(res.status).to.eq(200)
+        expect(res.body.length).to.be.greaterThan(1)
+        expect(res.body[0]).to.have.property("name")
+        expect(res.body[0]).to.have.property("location")
+        expect(res.body[0]).to.have.property("description")
+        expect(res.body[0]).to.have.property("start")
+        expect(res.body[0]).to.have.property("finish")
+        expect(res.body[1]).to.have.property("name");
+        expect(res.body[1]).to.have.property("location");
+        expect(res.body[1]).to.have.property("description");
+        expect(res.body[1]).to.have.property("start");
+        expect(res.body[1]).to.have.property("finish");
+      })
+
+    cy.reload()
 
     cy.get("ul")
       .should("exist")
@@ -54,8 +94,10 @@ describe("LiveLy Application", () => {
     cy.get("li").eq(0)
       .find("h3")
       .should("exist")
+
+    cy.get("li").eq(0)
       .find("p")
-      .should("have.length", 2)
+      .should("have.length.at.least", 3)
   })
 
   it("allows an admin to add an event to the community events list", () => {

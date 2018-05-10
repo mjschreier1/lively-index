@@ -18,8 +18,9 @@
 - Number of instances of button components rendered on the page equals the length of the buttons array in the app component
 - One button component (#communityCalendar) is rendered with an h2 containing "Community Calendar" and a calendar icon
 - When clicked, #communityCalendar navigates to /calendar
+- Event data set can be retrieved via a GET request to deployment-server/events and includes name, location, description, start time, and finish time
 - /calendar contains a ul
-- Each li in the list contains an h3 with the name of the event, a p with the location, a p with the time
+- There is an li for each event in the list containing an h3 with the name of the event, a p with the time, a p with the date, a p with the location, and an optional p with description
 
 #### As a manager, I want to be able to add an event to the community events list so that I don't have to call our developer to update the calendar.
 - On load, the index route loads a modal with an input for last name, a number input for user PIN, and a submit button
