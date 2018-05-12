@@ -209,7 +209,6 @@ describe("LiveLy Application", () => {
     cy.get("#communityCalendar")
       .click()
 
-      
       cy.request(
         "POST",
         "https://lively-app-server.herokuapp.com/events?startYear=2018&startMonth=5&startDate=26&startHour=19&startMinute=0&finishYear=2018&finishMonth=5&finishDate=26&finishHour=21&finishMinute=0",
@@ -230,6 +229,9 @@ describe("LiveLy Application", () => {
         }
       )
 
+    cy.go("back")
+    cy.go("forward")
+
     cy.get("li").eq(0)
       .find("i")
       .should("exist")
@@ -240,34 +242,30 @@ describe("LiveLy Application", () => {
       .should("exist")
       .and("have.attr", "class", "fas fa-times")
 
-    let liCount = null;
     cy.get("li")
       .then(lis => {
         expect(lis.length).to.be.greaterThan(1);
-        liCount = lis.length;
-      })
-
-    cy.get("li").eq(0)
-      .find("i")
-      .click()
-
-    cy.get("li")
-      .then(lis => {
-        expect(lis.length).to.eq(liCount - 1)
-      })
-
-    cy.get("li").eq(0)
-      .find("i")
-      .click()
-
-    cy.get("li")
-      .then(lis => {
-        expect(lis.length).to.eq(liCount - 2)
-      })
-
-    cy.request("https://lively-app-server.herokuapp.com/events")
-      .then(res => {
-        expect(res.length).to.eq(liCount - 2)
+        let liCount = lis.length;
+        
+        cy.get("li").eq(0)
+          .find("i")
+          .click()
+    
+        cy.get("li")
+          .should("have.length", liCount - 1)
+    
+        cy.get("li").eq(0)
+          .find("i")
+          .click()
+    
+        cy.get("li")
+          .should("have.length", liCount - 2)
+          
+        cy.request("https://lively-app-server.herokuapp.com/events")
+          .then(res => {
+            console.log(res)
+            expect(res.body.length).to.eq(liCount - 2)
+          })
       })
   })
 })
