@@ -1,6 +1,23 @@
+// Commented out original tests to account for user login
+
 describe("LiveLy Application", () => {
-  it("has LiveLy branding present in the footer", () => {
+  beforeEach(() => {
     cy.visit("/")
+
+    cy.get("#credentials input").eq(0)
+      .clear()
+      .type("admin")
+
+    cy.get("#credentials input").eq(1)
+      .clear()
+      .type("12345")
+
+    cy.get("#credentials button")
+      .click()
+  })
+
+  it("has LiveLy branding present in the footer", () => {
+    // cy.visit("/")
 
     cy.get("footer")
       .should("exist")
@@ -31,7 +48,7 @@ describe("LiveLy Application", () => {
   it("has a community events list at /calendar", () => {
     cy.get(".buttonComponent")
       .should("exist")
-      .and("have.length", 1)
+      .and("have.length.at.least", 1)
 
     cy.get("#communityCalendar")
       .should("exist")
@@ -88,6 +105,17 @@ describe("LiveLy Application", () => {
 
     cy.reload()
 
+    cy.get("#credentials input").eq(0)
+      .clear()
+      .type("admin")
+
+    cy.get("#credentials input").eq(1)
+      .clear()
+      .type("12345")
+
+    cy.get("#credentials button")
+      .click()
+
     cy.get("ul")
       .should("exist")
 
@@ -100,61 +128,61 @@ describe("LiveLy Application", () => {
       .should("have.length.at.least", 3)
   })
 
-  it.only("allows an admin to add an event to the community events list", () => {
-    cy.visit("/")
+  it("allows an admin to add an event to the community events list", () => {
+    // cy.visit("/")
 
-    cy.get("#credentials")
-      .should("exist")
+    // cy.get("#credentials")
+    //   .should("exist")
 
-    cy.get("#credentials input")
-      .should("have.length", 2)
+    // cy.get("#credentials input")
+    //   .should("have.length", 2)
 
-    cy.get("#credentials button")
-      .should("exist")
-      .and("contain", "Submit")
-      .and("have.attr", "disabled")
+    // cy.get("#credentials button")
+    //   .should("exist")
+    //   .and("contain", "Submit")
+    //   .and("have.attr", "disabled")
 
-    cy.get("#credentials input").eq(0)
-      .type("a")
+    // cy.get("#credentials input").eq(0)
+    //   .type("a")
 
-    cy.get("#credentials input").eq(1)
-      .type("1234")
+    // cy.get("#credentials input").eq(1)
+    //   .type("1234")
 
-    cy.get("#credentials button")
-      .should("have.attr", "disabled")
+    // cy.get("#credentials button")
+    //   .should("have.attr", "disabled")
 
-    cy.get("#credentials input").eq(1)
-      .type("5")
+    // cy.get("#credentials input").eq(1)
+    //   .type("5")
 
-    cy.get("#credentials button")
-      .should("have.attr", "disabled")
+    // cy.get("#credentials button")
+    //   .should("have.attr", "disabled")
 
-    cy.get("#credentials input").eq(0)
-      .type("b")
+    // cy.get("#credentials input").eq(0)
+    //   .type("b")
 
-    cy.get("#credentials button")
-      .should("not.have.attr", "disabled")
+    // cy.get("#credentials button")
+    //   .should("not.have.attr", "disabled")
 
-    cy.get("#credentials input").eq(1)
-      .clear()
-      .type("1234")
+    // cy.get("#credentials input").eq(1)
+    //   .clear()
+    //   .type("1234")
 
-    cy.get("#credentials button")
-      .should("have.attr", "disabled")
+    // cy.get("#credentials button")
+    //   .should("have.attr", "disabled")
 
-    cy.get("#credentials input").eq(0)
-      .clear()
-      .type("admin")
+    // cy.get("#credentials input").eq(0)
+    //   .clear()
+    //   .type("admin")
 
-    cy.get("#credentials input").eq(1)
-      .clear()
-      .type("12345")
+    // cy.get("#credentials input").eq(1)
+    //   .clear()
+    //   .type("12345")
 
-    cy.get("#credentials button")
-      .should("not.have.attr", "disabled")
+    // cy.get("#credentials button")
+    //   .should("not.have.attr", "disabled")
 
-    cy.get("#credentials button")
-      .click()
+    // cy.get("#credentials button")
+    //   .click()
 
     cy.get("#credentials")
       .should("not.exist")
@@ -167,9 +195,6 @@ describe("LiveLy Application", () => {
         expect(location.pathname).to.eq("/calendar")
       })
 
-    cy.location()
-      .should("contain", "/calendar")
-
     cy.get("form")
       .should("exist")
 
@@ -178,5 +203,71 @@ describe("LiveLy Application", () => {
 
     cy.get("form button")
       .should("exist")
+  })
+
+  it.only("should allow admin users to delete events from the community events list", () => {
+    cy.get("#communityCalendar")
+      .click()
+
+      
+      cy.request(
+        "POST",
+        "https://lively-app-server.herokuapp.com/events?startYear=2018&startMonth=5&startDate=26&startHour=19&startMinute=0&finishYear=2018&finishMonth=5&finishDate=26&finishHour=21&finishMinute=0",
+        {
+          name: "Disco Night",
+          location: "Clubhouse",
+          description: "Bring your dancing shoes!"
+        }
+      )
+      
+      cy.request(
+        "POST",
+        "https://lively-app-server.herokuapp.com/events?startYear=2018&startMonth=6&startDate=27&startHour=9&startMinute=0&finishYear=2018&finishMonth=6&finishDate=27&finishHour=11&finishMinute=0",
+        {
+          name: "Disco Night Cleanup",
+          location: "Clubhouse",
+          description: "Help us clean up your mess!"
+        }
+      )
+
+    cy.get("li").eq(0)
+      .find("i")
+      .should("exist")
+      .and("have.attr", "class", "fas fa-times")
+
+    cy.get("li").eq(1)
+      .find("i")
+      .should("exist")
+      .and("have.attr", "class", "fas fa-times")
+
+    let liCount = null;
+    cy.get("li")
+      .then(lis => {
+        expect(lis.length).to.be.greaterThan(1);
+        liCount = lis.length;
+      })
+
+    cy.get("li").eq(0)
+      .find("i")
+      .click()
+
+    cy.get("li")
+      .then(lis => {
+        expect(lis.length).to.eq(liCount - 1)
+      })
+
+    cy.get("li").eq(0)
+      .find("i")
+      .click()
+
+    cy.get("li")
+      .then(lis => {
+        expect(lis.length).to.eq(liCount - 2)
+      })
+
+    cy.request("https://lively-app-server.herokuapp.com/events")
+      .then(res => {
+        expect(res.length).to.eq(liCount - 2)
+      })
   })
 })
