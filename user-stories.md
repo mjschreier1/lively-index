@@ -52,7 +52,7 @@
 - When an admin user clicks #serviceRequests to navigate to /service, an additional button renders with the text "Open Service Requests" (#openRequests)
 - When #openRequests is clicked, a collapsed card for each open request is rendered
 - The collapsed card contains an h3 with the unit number and subject
-- When clicked, the card expands to also render p tags with resident owner, contact number, description, and any admin notes
+- When clicked, the card expands to also render p tags with resident owner, contact number, and description
 
 #### As a manager, I want to be able to update the status of service requests so that the resident can follow our progress in resolving any maintenance issues.
 - When an admin user is at /service and clicks #openRequests to view the list of open service requests, each card (when expanded) renders the admin notes in a form input field and the open status in a dropdown menu

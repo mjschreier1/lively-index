@@ -310,7 +310,7 @@ describe("LiveLy Application", () => {
       "POST",
       "https://lively-app-server.herokuapp.com/service",
       {
-        id: "2",
+        userId: "2",
         unit: "123",
         contact: "7204600159",
         subject: "Leaky Faucet",
@@ -325,7 +325,7 @@ describe("LiveLy Application", () => {
       "POST",
       "https://lively-app-server.herokuapp.com/service",
       {
-        id: "2",
+        userId: "2",
         unit: "123",
         contact: "7204600159",
         subject: "Bar Light Out",
@@ -343,12 +343,12 @@ describe("LiveLy Application", () => {
       .should("have.length", 2)
 
     cy.get("li").eq(0)
-      .find("h4").eq(0)
+      .find("h3").eq(0)
       .should("exist")
       .and("contain", "123")
 
     cy.get("li").eq(0)
-      .find("h4").eq(1)
+      .find("h3").eq(1)
       .should("exist")
       .and("contain", "Leaky Faucet")
 
@@ -363,12 +363,12 @@ describe("LiveLy Application", () => {
       .and("contain", "Management Notes:")
 
     cy.get("li").eq(1)
-      .find("h4").eq(0)
+      .find("h3").eq(0)
       .should("exist")
       .and("contain", "123")
 
     cy.get("li").eq(1)
-      .find("h4").eq(1)
+      .find("h3").eq(1)
       .should("exist")
       .and("contain", "Bar Light Out")
 
@@ -385,7 +385,7 @@ describe("LiveLy Application", () => {
     cy.request("DELETE", "https://lively-app-server.herokuapp.com/service/all")
   })
 
-  it.only("allows a user to submit a service request", () => {
+  it("allows a user to submit a service request", () => {
     cy.reload()
 
     cy.get("#credentials input").eq(0)
@@ -406,7 +406,7 @@ describe("LiveLy Application", () => {
       .should("exist")
 
     cy.get("form input")
-      .should("have.length", 4)
+      .should("have.length", 3)
 
     cy.get("label").eq(0)
       .should("contain", "Unit")
@@ -438,7 +438,7 @@ describe("LiveLy Application", () => {
     cy.get("input").eq(2)
       .clear()
 
-    cy.get("input").eq(3)
+    cy.get("textarea")
       .type("a")
 
     cy.get("button")
@@ -502,5 +502,122 @@ describe("LiveLy Application", () => {
         expect(res.body[0].subject).to.eq("a")
         expect(res.body[0].description).to.eq("a")
       })
+  })
+
+  it.only("allows admin users to view all open service requests", () => {
+    cy.get("#serviceRequests")
+      .click()
+
+    cy.get("#openRequests")
+      .should("exist")
+    
+    cy.get("#addAsResident")
+      .should("not.exist")
+
+    cy.get("#addForResident")
+      .should("not.exist")
+
+    cy.get("#openRequestsButton")
+      .should("exist")
+    
+    cy.get("#addForResidentButton")
+      .should("exist")
+
+    cy.get("#myRequestsButton")
+      .should("exist")
+      .click()
+
+    cy.get("#addAsResident")
+      .should("exist")
+
+    cy.get("#openRequests")
+      .should("not.exist")
+
+    cy.get("#addForResident")
+      .should("not.exist")
+
+    cy.get("#addForResidentButton")
+      .click()
+
+    cy.get("#openRequests")
+      .should("not.exist")
+
+    cy.get("#addAsResident")
+      .should("not.exist")
+
+    cy.get("#addForResident")
+      .should("exist")
+
+    cy.request("DELETE", "https://lively-app-server.herokuapp.com/service/all")
+
+    cy.request(
+      "POST",
+      "https://lively-app-server.herokuapp.com/service",
+      {
+        userId: "3",
+        unit: "123",
+        contact: "7204600159",
+        subject: "Bar Light Out",
+        description: "One of the lights above the bar in the kitchen is out."
+      }
+    )
+
+    cy.request(
+      "POST",
+      "https://lively-app-server.herokuapp.com/service",
+      {
+        userId: "4",
+        unit: "227",
+        contact: "555-555-5555",
+        subject: "Leaky Faucet",
+        description: "The faucet in the master bath is leaking. Help!"
+      }
+    )
+
+    cy.request(
+      "POST",
+      "https://lively-app-server.herokuapp.com/service",
+      {
+        userId: "5",
+        unit: "208",
+        contact: "(555) 123-4567",
+        subject: "Bird Infestation on the Patio",
+        description: "Birds are all over my patio at all hours of the day. I don't know why I can't get them to go away. Please help me repel those pesky creatures!!!"
+      }
+    )
+
+    cy.get("#openRequestsButton")
+      .click()
+
+    cy.get("ul")
+      .should("exist")
+
+    cy.get("li")
+      .should("have.length", 3)
+
+    cy.get("li").eq(0)
+      .find("h3")
+      .should("contain", "123")
+      .and("contain", "Bar Light Out")
+
+    cy.get("li").eq(0)
+      .should("not.contain", "7204600159")
+      .and("not.contain", "One of the lights above the bar in the kitchen is out.")
+      .click()
+      .find("p").eq(0)
+      .should("contain", "Robert Johnson")
+
+    cy.get("li").eq(0)
+      .find("p").eq(1)
+      .should("contain", "7204600159")
+
+    cy.get("li").eq(0)
+      .find("p").eq(2)
+      .should("contain", "One of the lights above the bar in the kitchen is out.")
+
+    cy.get("li").eq(0)
+      .click()
+      .should("not.contain", "7204600159")
+      .and("not.contain", "One of the lights above the bar in the kitchen is out.")
   })
 })
