@@ -5,6 +5,8 @@ Check out LiveLy at https://lively.surge.sh.
 * To see the admin experience, use the last name "admin" and the PIN "12345"
 * To see the resident experience, use the last name "resident" and the PIN "12345"
 
+Note: The server goes to sleep after periods of inactivity, so it may take longer than expected when initially validating credentials. Thanks for your patience!
+
 ## See the Code
 * [Client](https://github.com/mjschreier1/lively-client)
 * [Server](https://github.com/mjschreier1/lively-server)
