@@ -39,14 +39,14 @@
 - One button component (#serviceRequests) is rendered with an h2 containing "Service Requests" and a tool icon
 - When clicked, #serviceRequests navigates to /service
 - /service contains a ul with an li for each request with an "open" status where the user is noted as the request owner
-- Each li contains an h4 with the unit number, a p with the provided description, and a p with any admin notes
+- Each li contains an h4 with the unit number, an h4 with the subject, a p with the provided description, and a p with any admin notes
 
 #### As a user, I want to be able to submit a service request online so that I don't have to contact the office to submit a request.
-- When at /service, a button with the text "+ New Request" (#newRequest) is rendered
-- When #newRequest is clicked, a form element is rendered
+- A form element is rendered at /service
 - The rendered form contains inputs for unit, phone, subject line, and description, and has a submit button
 - The submit button is disabled when any of these fields are empty
-- The submit button is disabled when the phone number provided does not match a phone number regex pattern
+- After submitting a service request, a success message is displayed for four seconds
+- After submitting a service request, it exists in the database 
 
 #### As a manager, I want to be able to view all open service requests
 - When an admin user clicks #serviceRequests to navigate to /service, an additional button renders with the text "Open Service Requests" (#openRequests)

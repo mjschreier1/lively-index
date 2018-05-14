@@ -205,7 +205,7 @@ describe("LiveLy Application", () => {
       .should("exist")
   })
 
-  it.only("should allow admin users to delete events from the community events list", () => {
+  it("should allow admin users to delete events from the community events list", () => {
     cy.get("#communityCalendar")
       .click()
 
@@ -263,9 +263,244 @@ describe("LiveLy Application", () => {
           
         cy.request("https://lively-app-server.herokuapp.com/events")
           .then(res => {
-            console.log(res)
             expect(res.body.length).to.eq(liCount - 2)
           })
+      })
+  })
+
+  it("allows users to view open service requests relating to their lease/unit", () => {
+    cy.reload()
+
+    cy.get("#credentials input").eq(0)
+      .clear()
+      .type("resident")
+
+    cy.get("#credentials input").eq(1)
+      .clear()
+      .type("12345")
+
+    cy.get("#credentials button")
+      .click()
+
+    cy.get("#serviceRequests")
+      .should("exist")
+
+    cy.get("#serviceRequests")
+      .find("h2")
+      .should("contain", "Service Requests")
+    
+    cy.get("#serviceRequests")
+      .find("i")
+      .should("exist")
+
+    cy.get("#serviceRequests")
+      .click()
+
+    cy.location()
+      .should(location => {
+        expect(location.pathname).to.eq("/service")
+      })
+
+    cy.request("DELETE", "https://lively-app-server.herokuapp.com/service/all")
+      .then(res => {
+        expect(res.status).to.eq(200)
+      })
+
+    cy.request(
+      "POST",
+      "https://lively-app-server.herokuapp.com/service",
+      {
+        id: "2",
+        unit: "123",
+        contact: "7204600159",
+        subject: "Leaky Faucet",
+        description: "Faucet in the master bath is leaking."
+      }
+    )
+      .then(res => {
+        expect(res.status).to.eq(201)
+      })
+
+    cy.request(
+      "POST",
+      "https://lively-app-server.herokuapp.com/service",
+      {
+        id: "2",
+        unit: "123",
+        contact: "7204600159",
+        subject: "Bar Light Out",
+        description: "One of the lights above the bar in the kitchen is out."
+      }
+    )
+      .then(res => {
+        expect(res.status).to.eq(201)
+      })
+
+    cy.get("ul")
+      .should("exist")
+
+    cy.get("li")
+      .should("have.length", 2)
+
+    cy.get("li").eq(0)
+      .find("h4").eq(0)
+      .should("exist")
+      .and("contain", "123")
+
+    cy.get("li").eq(0)
+      .find("h4").eq(1)
+      .should("exist")
+      .and("contain", "Leaky Faucet")
+
+    cy.get("li").eq(0)
+      .find("p").eq(0)
+      .should("exist")
+      .and("contain", "Faucet in the master bath is leaking.")
+
+    cy.get("li").eq(0)
+      .find("p").eq(1)
+      .should("exist")
+      .and("contain", "Management Notes:")
+
+    cy.get("li").eq(1)
+      .find("h4").eq(0)
+      .should("exist")
+      .and("contain", "123")
+
+    cy.get("li").eq(1)
+      .find("h4").eq(1)
+      .should("exist")
+      .and("contain", "Bar Light Out")
+
+    cy.get("li").eq(1)
+      .find("p").eq(0)
+      .should("exist")
+      .and("contain", "One of the lights above the bar in the kitchen is out.")
+
+    cy.get("li").eq(1)
+      .find("p").eq(1)
+      .should("exist")
+      .and("contain", "Management Notes:")
+
+    cy.request("DELETE", "https://lively-app-server.herokuapp.com/service/all")
+  })
+
+  it.only("allows a user to submit a service request", () => {
+    cy.reload()
+
+    cy.get("#credentials input").eq(0)
+      .clear()
+      .type("resident")
+
+    cy.get("#credentials input").eq(1)
+      .clear()
+      .type("12345")
+
+    cy.get("#credentials button")
+      .click()
+
+    cy.get("#serviceRequests", { timeout: 20000 })
+      .click()
+
+    cy.get("form")
+      .should("exist")
+
+    cy.get("form input")
+      .should("have.length", 4)
+
+    cy.get("label").eq(0)
+      .should("contain", "Unit")
+
+    cy.get("label").eq(1)
+      .should("contain", "Contact")
+
+    cy.get("label").eq(2)
+      .should("contain", "Subject")
+
+    cy.get("label").eq(3)
+      .should("contain", "Description")
+
+    cy.get("button")
+      .should("have.attr", "disabled")
+
+    cy.get("input").eq(0)
+      .type("a")
+
+    cy.get("input").eq(1)
+      .type("a")
+
+    cy.get("input").eq(2)
+      .type("a")
+
+    cy.get("button")
+      .should("have.attr", "disabled")
+
+    cy.get("input").eq(2)
+      .clear()
+
+    cy.get("input").eq(3)
+      .type("a")
+
+    cy.get("button")
+      .should("have.attr", "disabled")
+
+    cy.get("input").eq(1)
+      .clear()
+
+    cy.get("input").eq(2)
+      .type("a")
+
+    cy.get("button")
+      .should("have.attr", "disabled")
+
+    cy.get("input").eq(0)
+      .clear()
+
+    cy.get("input").eq(1)
+      .type("a")
+
+    cy.get("button")
+      .should("have.attr", "disabled")
+
+    cy.get("input").eq(0)
+      .type("a")
+
+    cy.get("button")
+      .should("not.have.attr", "disabled")
+
+    cy.get("#statusMessage")
+      .should("not.exist")
+
+    cy.request("DELETE", "https://lively-app-server.herokuapp.com/service/all")
+      .then(res => {
+        expect(res.status).to.eq(200)
+      })
+
+    cy.get("button")
+      .click()
+
+    cy.get("#statusMessage", { timeout: 10000 })
+      .should("exist")
+      .and("contain", "Service request submitted successfully")
+
+    cy.wait(3000)
+
+    cy.get("#statusMessage")
+      .should("exist")
+
+    cy.wait(1000)
+    
+    cy.get("#statusMessage")
+      .should("not.exist")
+
+    cy.request("https://lively-app-server.herokuapp.com/service/2")
+      .then(res => {
+        expect(res.status).to.eq(200)
+        expect(res.body.length).to.eq(1)
+        expect(res.body[0].unit).to.eq("a")
+        expect(res.body[0].contact).to.eq("a")
+        expect(res.body[0].subject).to.eq("a")
+        expect(res.body[0].description).to.eq("a")
       })
   })
 })
