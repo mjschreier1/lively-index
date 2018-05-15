@@ -504,7 +504,7 @@ describe("LiveLy Application", () => {
       })
   })
 
-  it.only("allows admin users to view all open service requests", () => {
+  it("allows admin users to view all open service requests", () => {
     cy.get("#serviceRequests")
       .click()
 
@@ -523,7 +523,7 @@ describe("LiveLy Application", () => {
     cy.get("#addForResidentButton")
       .should("exist")
 
-    cy.get("#myRequestsButton")
+    cy.get("#addAsResidentButton")
       .should("exist")
       .click()
 
@@ -619,5 +619,130 @@ describe("LiveLy Application", () => {
       .click()
       .should("not.contain", "7204600159")
       .and("not.contain", "One of the lights above the bar in the kitchen is out.")
+  })
+
+  it.only("allows admin users to update the status of service requests", () => {
+    cy.get("#serviceRequests")
+      .click()
+
+    cy.request("DELETE", "https://lively-app-server.herokuapp.com/service/all")
+
+    cy.request(
+      "POST",
+      "https://lively-app-server.herokuapp.com/service",
+      {
+        userId: "3",
+        unit: "123",
+        contact: "7204600159",
+        subject: "Bar Light Out",
+        description: "One of the lights above the bar in the kitchen is out."
+      }
+    )
+
+    cy.request(
+      "POST",
+      "https://lively-app-server.herokuapp.com/service",
+      {
+        userId: "4",
+        unit: "227",
+        contact: "555-555-5555",
+        subject: "Leaky Faucet",
+        description: "The faucet in the master bath is leaking. Help!"
+      }
+    )
+
+    cy.request(
+      "POST",
+      "https://lively-app-server.herokuapp.com/service",
+      {
+        userId: "5",
+        unit: "208",
+        contact: "(555) 123-4567",
+        subject: "Bird Infestation on the Patio",
+        description: "Birds are all over my patio at all hours of the day. I don't know why I can't get them to go away. Please help me repel those pesky creatures!!!"
+      }
+    )
+
+    cy.get("form")
+      .should("not.exist")
+
+    cy.get("li").eq(0)
+      .click()
+
+    cy.get("form")
+      .should("have.length", 1)
+
+    cy.get("li").eq(1)
+      .click()
+
+    cy.get("form")
+      .should("have.length", 2)
+
+    cy.get("li").eq(2)
+      .click()
+
+    cy.get("form")
+      .should("have.length", 3)
+
+    cy.get("form input")
+      .should("have.length", 3)
+
+    cy.get("form select")
+      .should("have.length", 3)
+
+    cy.get("form select").eq(0)
+      .find("option")
+      .should("have.length", 2)
+
+    cy.get("form select").eq(0)
+      .find("option").eq(0)
+      .should("contain", "Open")
+
+    cy.get("form select").eq(0)
+      .find("option").eq(1)
+      .should("contain", "Closed")
+
+    cy.get("form button")
+      .should("have.length", 3)
+
+    cy.get("form button").eq(0)
+      .should("have.attr", "disabled")
+
+    cy.get("form button").eq(1)
+      .should("have.attr", "disabled")
+
+    cy.get("form button").eq(2)
+      .should("have.attr", "disabled")
+
+    cy.get("form select").eq(0)
+      .click()
+
+    cy.get("form select").eq(0)
+      .find("option").eq(1)
+      .click()
+
+    cy.get("form button").eq(0)
+      .should("not.have.attr", "disabled")
+      .click()
+    
+    cy.get("li")
+      .should("have.length", 2)
+
+    cy.get("form input").eq(0)
+      .type("Need to order a part before repairs can be made.")
+
+    cy.get("form button").eq(0)
+      .should("not.have.attr", "disabled")
+      .click()
+
+    cy.go("back")
+    cy.go("forward")
+
+    cy.get("li")
+      .should("have.length", 2)
+
+    cy.get("li").eq(0)
+      .find("input")
+      .should("contain", "Need to order a part before repairs can be made.")
   })
 })
