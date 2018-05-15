@@ -621,7 +621,7 @@ describe("LiveLy Application", () => {
       .and("not.contain", "One of the lights above the bar in the kitchen is out.")
   })
 
-  it.only("allows admin users to update the status of service requests", () => {
+  it("allows admin users to update the status of service requests", () => {
     cy.get("#serviceRequests")
       .click()
 
@@ -762,5 +762,37 @@ describe("LiveLy Application", () => {
     // cy.get("li").eq(0)
     //   .find("input")
     //   .should("contain", "Need to order a part before repairs can be made.")
+  })
+
+  it.only("allows residents to pay their rent online", () => {
+    cy.get("#payment")
+      .should("exist")
+
+    cy.get("#payment h2")
+      .should("have.length", 1)
+      .and("contain", "Make a Payment")
+
+    cy.get("#payment i")
+      .should("exist")
+      
+    cy.get("#payment")
+      .click()
+
+    cy.location()
+      .should(location => {
+        expect(location.pathname).to.eq("/payment")
+      })
+
+    cy.get("form")
+      .should("exist")
+
+    cy.get("form label")
+      .should("exist")
+      .and("contain", "Amount")
+
+    cy.get("form iframe")
+      .should("exist")
+
+    // Omitted tests for remaining acceptance criteria as Stripe payment forms render in iframes, which are not supported by Cypress
   })
 })

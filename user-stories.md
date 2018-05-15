@@ -81,12 +81,9 @@
 - When clicked, #payment navigates to /payment
 - /payment has an h2 with the text "Make a Payment" and a form
 - The payment form has a number input with the label "amount"
-- The payment form includes a Stripe/Plaid iframe that can securely collect ACH payment information
-- /payment has a p with terms as required by law (see https://support.stripe.com/questions/accepting-ach-payments-with-stripe#ach-authorization), including clear and legible consent, transaction specific details, client/account information, further transaction info (if applicable), receipt of transaction, process for revocation
+- The payment form includes a Stripe iframe that can securely collect credit card information
 - When the user enters credentials and clicks submit, a confirmation prompt appears on-screen
 - When the user confirms the prompt, a processing message in a p tag renders on-screen
-
-    More info at https://stripe.com/docs/ach
 
 #### As a resident, I want an email confirmation after submitting an online payment so that I have peace of mind in case of a clerical error in the office.
 - After accepting the payment confirmation prompt, the user receives an email confirmation message to alert them that their payment is successfully processing
@@ -137,3 +134,9 @@
 #### As a manager, I want to see animations as the user moves between UI components so that the user experience is more elegant.
 #### As a user, I want to be able to export a community calendar event to my Google calendar.
 #### As a resident, I want to be able to view my monthly balance online so that I don't have to contact the office to know how much rent is due.
+#### As a manager, I want payments to be collected via bank account rather than by credit card so that the fee is lower and funds are reliable
+- /payment has a p with terms as required by law (see https://support.stripe.com/questions/accepting-ach-payments-with-stripe#ach-authorization), including clear and legible consent, transaction specific details, client/account information, further transaction info (if applicable), receipt of transaction, process for revocation
+- When the user enters credentials and clicks submit, a confirmation prompt appears on-screen
+- When the user confirms the prompt, a processing message in a p tag renders on-screen
+
+    More info at https://stripe.com/docs/ach

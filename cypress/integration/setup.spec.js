@@ -122,14 +122,5 @@ describe("how great the app will look after this", () => {
       .then(res => {
         expect(res.status).to.eq(201)
       })
-
-    
-
-
-    
-
-
-    
-
   })
 })
