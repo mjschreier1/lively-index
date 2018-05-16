@@ -790,6 +790,10 @@ describe("LiveLy Application", () => {
       .should("exist")
       .and("contain", "Amount")
 
+    cy.get("form input")
+      .should("exist")
+      .and("have.attr", "type", "number")
+
     cy.get("form iframe")
       .should("exist")
 

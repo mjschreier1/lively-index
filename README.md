@@ -20,6 +20,4 @@ LiveLy is a community calendar, a service request portal, a conference room rese
 Angular 6, Stripe, Java, Spring Boot, PostgreSQL, Cypress
 
 ## Features Still in Development
-* Service Request Portal
 * Amenity Reservation
-* Rent Payment

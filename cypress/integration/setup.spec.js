@@ -5,6 +5,11 @@ describe("how great the app will look after this", () => {
         expect(res.status).to.eq(200)
       })
 
+    cy.request("DELETE", "https://lively-app-server.herokuapp.com/payment/all")
+      .then(res => {
+        expect(res.status).to.eq(200)
+      })
+
     cy.request("DELETE", "https://lively-app-server.herokuapp.com/users/all")
       .then(res => {
         expect(res.status).to.eq(200)
