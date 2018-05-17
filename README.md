@@ -16,8 +16,20 @@ I have lived in apartments for the last ten years across a few different states.
 
 LiveLy is a community calendar, a service request portal, a conference room reservation desk, and a resident payment portal. 
 
+## LiveLy Mobile View
+![Lively Mobile View](./LiveLyMobileView.png)
+
 ## Technologies
 Angular 6, Stripe, Java, Spring Boot, PostgreSQL, Cypress
 
 ## Features Still in Development
 * Amenity Reservation
+
+## Run the Project Locally
+Fork and clone [the client repository](https://github.com/mjschreier1/lively-client) on your local machine, then run `ng serve` from the root of that directory. Open your browser to http://localhost:4200 to see it in action! Note that some elements and features, such as fonts and payments will not work properly without an internet connection.
+
+## License
+MIT
+
+## Contact
+mjschreier1@gmail.com
